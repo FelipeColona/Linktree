@@ -15,6 +15,4 @@ public class Shorturl {
     @EqualsAndHashCode.Include
     @Id
     private String id;
-
-    private String title;
 }

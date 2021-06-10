@@ -1,7 +1,6 @@
 package br.com.linktree.api.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,8 @@ public class ShorturlController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private Shorturl create(@RequestBody Shorturl shorturl){
+    private Shorturl create(){
+        Shorturl shorturl = new Shorturl();
         String uuid = this.genUUID();
         shorturl.setId(uuid);
 
