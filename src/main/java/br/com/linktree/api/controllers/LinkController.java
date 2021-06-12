@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,5 +63,46 @@ public class LinkController {
         });
 
         return linkRepository.findByShorturl_id(body.getShorturl_id());
+    }
+
+    @PutMapping("/link")
+    public ResponseEntity<Link> update(@RequestBody LinksType body){
+        List<Link> link = linkRepository.findByShorturl_id(body.getShorturl_id());
+
+        if(link.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        link.forEach(item ->{
+            linkRepository.deleteById(item.getId());
+        });
+
+        body.getLinks().forEach(item -> {
+            Link l = new Link();
+            l.setRedirect(item);
+
+            Shorturl s = new Shorturl();
+            s.setId(body.getShorturl_id());
+
+            l.setShorturl(s);
+
+            linkRepository.save(l);
+        });
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/link/{shorturlId}")
+    public ResponseEntity<Void> exclude(@PathVariable String shorturlId){
+        List<Link> link = linkRepository.findByShorturl_id(shorturlId);
+        if(link.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        link.forEach(item ->{
+            linkRepository.deleteById(item.getId());
+        });
+
+        return ResponseEntity.noContent().build(); 
     }
 }
