@@ -73,9 +73,7 @@ public class LinkController {
             return ResponseEntity.notFound().build();
         }
 
-        link.forEach(item ->{
-            linkRepository.deleteById(item.getId());
-        });
+        linkRepository.deleteByShorturl_id(body.getShorturl_id());
 
         body.getLinks().forEach(item -> {
             Link l = new Link();
@@ -94,14 +92,13 @@ public class LinkController {
 
     @DeleteMapping("/link/{shorturlId}")
     public ResponseEntity<Void> exclude(@PathVariable String shorturlId){
+
+        linkRepository.deleteByShorturl_id(shorturlId);
+
         List<Link> link = linkRepository.findByShorturl_id(shorturlId);
         if(link.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-
-        link.forEach(item ->{
-            linkRepository.deleteById(item.getId());
-        });
 
         return ResponseEntity.noContent().build(); 
     }
